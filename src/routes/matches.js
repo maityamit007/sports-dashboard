@@ -12,7 +12,7 @@ matchRouter.get('/', async (req, res) => {
     const parsed = listMatchesQuerySchema.safeParse(req.query);
 
     if (!parsed.success) {
-        return res.status(400).json({ error: 'Error!' }, parsed.error);
+        return res.status(400).json({ error:   'Error!' }, parsed.error);
     }
     const limit = Math.min(parsed.data.limit ?? 50, MAX_LIMIT)
 
@@ -20,7 +20,7 @@ matchRouter.get('/', async (req, res) => {
         let response = await db.select().from(matches).orderBy(desc(matches.createdAt)).limit(limit)
         res.status(200).json({ data: response })
     } catch (e) {
-        res.status(500).json({ error: '', details: JSON.stringify(e) })
+        res.status(500).json({ error: '', details: parsed.error.issues })
     }
     res.status(200).json({ data });
 })
@@ -47,12 +47,16 @@ matchRouter.post('/matches', async (req, res) => {
             status: getMatchStatus(startTime, endTime)
         }).returning();
 
+        if(res.app.locals.broadcastMatchCreated){
+            res.app.locals.broadcastMatchCreated(event);
+        }
+
         res.status(201).json({
             data: event
         })
     } catch (e) {
         res.status(500).json({
-            error: 'Failed!', details: JSON.stringify(e)
+            error: 'Failed!', details: parsed.error.issues
         })
     }
 })
