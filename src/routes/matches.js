@@ -27,7 +27,7 @@ matchRouter.get('/', async (req, res) => {
 
 const MAX_LIMIT = 100;
 
-matchRouter.post('/matches', async (req, res) => {
+matchRouter.post('/', async (req, res) => {
     const parsed = createMatchSchema.safeParse(req.body);
     console.log('parsed', parsed);
 
