@@ -25,20 +25,13 @@ export const wsArcjet = arcjetKey ?
         ]
     }) : null;
 
-
-    for(let i = 0; i< 10; i++){
-    const ws = webSocket('ws://localhost:8080/ws');
-    ws.onopen = (e) => console.log(`Socket ${i} openeed`);
-    ws.onclose =(e) =>  console.log(`Socket ${i} closed ${e.reason}`);
-}
-
-
 export function securityMiddleware() {
     return async (req, res, next) => {
         if (!httpArcjet) return next();
 
         try {
             const decision = await httpArcjet.protect(req);
+            console.log('decision', decision);
 
             if (decision.isDenied()) {
                 if (decision.reason.isRateLimit()) {
