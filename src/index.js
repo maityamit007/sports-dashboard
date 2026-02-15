@@ -12,9 +12,9 @@ const app = express();
 const server = http.createServer(app);
 app.use(express.json())
 
-const { broadcastMatchCreated } = attachWebSockServer(server);
+const { broadcastMatchCreated, broadcastCommentary } = attachWebSockServer(server);
 app.locals.boradcastMatchCreated = broadcastMatchCreated;
-// app.locals.boradcastMatchCreated = broadcastMatchCreated;
+app.locals.broadcastCommentary = broadcastCommentary;
 
 // app.use(securityMiddleware());
 app.use('/matches', matchRouter);
